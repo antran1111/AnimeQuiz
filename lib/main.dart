@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //TODO: Step 2 - Import the rFlutter_Alert package here.
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'quiz_brain.dart';
+import 'constants.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -39,7 +40,6 @@ class _QuizPageState extends State<QuizPage> {
       //TODO: Step 4 - Use IF/ELSE to check if we've reached the end of the quiz. If so,
       //On the next line, you can also use if (quizBrain.isFinished()) {}, it does the same thing.
       if (quizBrain.isFinished() == true) {
-
         //gather # of score using weebAlerts
         quizBrain.weebAnswers();
         //TODO Step 4 Part A - show an alert using rFlutter_alert,
@@ -49,31 +49,30 @@ class _QuizPageState extends State<QuizPage> {
 
         //Modified for our purposes:
         Alert(
-          context: context,
-          title: quizBrain.alertTitle,
-         // desc: 'You\'ve reached the end of the quiz.',
-          desc: quizBrain.weebResults,
-          image: Image.asset(quizBrain.imageAlert),
-        ).show();
+            context: context,
+            title: quizBrain.alertTitle,
+            // desc: 'You\'ve reached the end of the quiz.',
+            desc: quizBrain.weebResults,
+            image: Image.asset(quizBrain.imageAlert),
+            buttons: [
+              DialogButton(
+                child: Text("Play Again!", style: defaultTextStyle),
+                onPressed: () => Navigator.pop(context),
+              )
+            ]).show();
 
-        //TODO Step 4 Part C - reset the questionNumber,
         quizBrain.reset();
 
-        //TODO Step 4 Part D - empty out the scoreKeeper.
         scoreKeeper = [];
-      }
-
-      //TODO: Step 6 - If we've not reached the end, ELSE do the answer checking steps below 👇
-      else {
+      } else {
         if (userPickedAnswer == correctAnswer) {
           quizBrain.sumCorrectScore();
           scoreKeeper.add(Icon(
             Icons.check,
             color: Colors.green,
-
           ));
-
         } else {
+          quizBrain.sumWrongScore();
           scoreKeeper.add(Icon(
             Icons.close,
             color: Colors.red,
@@ -90,13 +89,15 @@ class _QuizPageState extends State<QuizPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        //add curent score percentage here
+
         Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                quizBrain.getQuestionText(),
+                'Your Score: ${quizBrain.calculatePercentage().toStringAsFixed(2)}%\n\n\n ${quizBrain.getQuestionText()}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -106,12 +107,21 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ),
         ),
+        //add images here
+        Expanded(
+          flex: 5,
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            //child : Image.asset('images/sadweeb.png'),//replace this with your images from the list later
+            child: Image.asset(quizBrain.getQuestionImage()),
+          ),
+        ),
         Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: FlatButton(
               textColor: Colors.white,
-              color: Colors.green,
+              color: color1,
               child: Text(
                 'True',
                 style: TextStyle(
@@ -130,7 +140,7 @@ class _QuizPageState extends State<QuizPage> {
           child: Padding(
             padding: EdgeInsets.all(15.0),
             child: FlatButton(
-              color: Colors.red,
+              color: color2,
               child: Text(
                 'False',
                 style: TextStyle(
@@ -158,6 +168,3 @@ question1: 'You can lead a cow down stairs but not up stairs.', false,
 question2: 'Approximately one quarter of human bones are in the feet.', true,
 question3: 'A slug\'s blood is green.', true,
 */
-
-
-

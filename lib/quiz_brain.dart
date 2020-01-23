@@ -1,16 +1,20 @@
 import 'question.dart';
 
-//change questions to are you an anime weeber?
-//if true >10, return yes
-//else return no. You need to watch more anime
 
+//todo anime weeber quiz v2,
+//create a score tracker
+//add in separate images for each quiz question
+//load the image
+//display final score and percentage at the end of the quiz
 
 class QuizBrain {
   int _questionNumber = 0;
   int correctQuestions = 0;
+  int wrongQuestions = 0;
   String imageAlert;
   String weebResults;
   String alertTitle;
+
 
 
   int sumCorrectScore () {
@@ -20,10 +24,15 @@ class QuizBrain {
     return correctQuestions;
 
   }
-
+  int sumWrongScore(){
+    wrongQuestions++;
+    print(wrongQuestions);
+    return wrongQuestions;
+  }
+//is it better to add in the images as a parallel or stash it in _questionBank as another parameter?
   List<Question> _questionBank = [
     Question('You like cats and call them Neko', true),
-    Question('You know how to do carameal dancing', false),
+    Question('You know how to do caramell dansen', false),
     Question('You like to yell out special attack moves when you watch anime', true),
     Question('Watching Anime makes you happy', true),
     Question('Your favorite anime character\'s bodypillow\'s is in your room', true),
@@ -49,6 +58,28 @@ class QuizBrain {
         true),
   ];
 
+  //a list of string containing the location of the asset image
+  List<String> _imageBank = [
+    ('images/animeBank1.png'),
+    ('images/animeBank4.png'),
+    ('images/animeBank12.png'),
+    ('images/animeBank8.png'),
+    ('images/animeBank10.png'),
+    ('images/animeBank11.png'),
+    ('images/animeBank7.png'),
+    ('images/animeBank8.png'),
+    ('images/animeBank9.png'),
+    ('images/animeBank10.png'),
+    ('images/animeBank11.png'),
+    ('images/animeBank12.png'),
+    ('images/animeBank13.png'),
+
+  ];
+
+  String getQuestionImage() {
+    return _imageBank[_questionNumber];
+  }
+
   void nextQuestion() {
     if (_questionNumber < _questionBank.length - 1) {
       _questionNumber++;
@@ -63,11 +94,9 @@ class QuizBrain {
     return _questionBank[_questionNumber].questionAnswer;
   }
 
-  //TODO: Step 3 Part A - Create a method called isFinished() here that checks to see if we have reached the last question. It should return (have an output) true if we've reached the last question and it should return false if we're not there yet.
 
   bool isFinished() {
     if (_questionNumber >= _questionBank.length - 1) {
-      //TODO: Step 3 Part B - Use a print statement to check that isFinished is returning true when you are indeed at the end of the quiz and when a restart should happen.
 
       print('Now returning true');
       return true;
@@ -77,17 +106,29 @@ class QuizBrain {
     }
   }
 
-  //TODO: Step 4 part B - Create a reset() method here that sets the questionNumber back to 0.
   void reset() {
     _questionNumber = 0;
     correctQuestions = 0;
+    wrongQuestions = 0;
     //reset correctQuestions and questionNumber so you can start over
   }
 
 
+  double calculatePercentage () {
+    double score;
+    if (wrongQuestions+correctQuestions == 0 || wrongQuestions+correctQuestions == null) score = 100;
+    else {
+      score = correctQuestions / (wrongQuestions + correctQuestions) * 100;
+      print(score);
+    } return score;
+
+  }
+
 
   void weebAnswers () {
-    if (correctQuestions > 7) {
+
+    double yourScore = calculatePercentage();
+    if (yourScore > 70) {
       alertTitle = "Congratulations!";
       weebResults = "Yes you are a Weeb!";
       imageAlert = "images/monkeyweeb.png";
